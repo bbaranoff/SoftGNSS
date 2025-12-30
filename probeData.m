@@ -130,23 +130,35 @@ if (fid > 0)
 
 
     %--- Frequency domain plot --------------------------------------------
-
-    if (settings.fileType==1) %Real Data
-        subplot(2,2,1:2);
-        pwelch(data, 32758, 2048, 16368, settings.samplingFreq/1e6)
-    else % I/Q Data
-        subplot(3,2,1:2);
-        [sigspec,freqv]=pwelch(data, 32758, 2048, 16368, settings.samplingFreq,'twosided');
-        plot(([-(freqv(length(freqv)/2:-1:1));freqv(1:length(freqv)/2)])/1e6, ...
-            10*log10([sigspec(length(freqv)/2+1:end);
-            sigspec(1:length(freqv)/2)]));
+    subplot(2,2,1:2);
+    
+    % Configuration compatible Octave : On définit la fenêtre
+    window_len = 4096;
+    % L'overlap doit être strictement inférieur à window_len
+    % En passant 0.5, Octave comprend 50% de recouvrement (conforme < 0.95)
+    overlap_pct = 0.5; 
+    
+    if (settings.fileType == 1) % Real Data
+        pwelch(data, window_len, overlap_pct, window_len, settings.samplingFreq/1e6);
+    else % I/Q Data (Cas gps-sdr-sim)
+        % Conversion I/Q si nécessaire
+        if isreal(data)
+            data = data(1:2:end) + 1i .* data(2:2:end);
+        end
+        
+        [pxx, f] = pwelch(data, window_len, overlap_pct, window_len, settings.samplingFreq, 'twosided');
+        
+        % Centrage du spectre (Shift)
+        f_shift = [(f(f >= settings.samplingFreq/2) - settings.samplingFreq); f(f < settings.samplingFreq/2)] / 1e6;
+        p_shift = 10*log10([pxx(f >= settings.samplingFreq/2); pxx(f < settings.samplingFreq/2)]);
+        
+        [f_sorted, idx] = sort(f_shift);
+        plot(f_sorted, p_shift(idx));
+        
+        grid on;
+        title('Spectre du signal simulé (I/Q)');
+        xlabel('Fréquence [MHz]'); ylabel('Magnitude [dB]');
     end
-
-    axis tight;
-    grid on;
-    title ('Frequency domain plot');
-    xlabel('Frequency (MHz)'); ylabel('Magnitude');
-
     %--- Histogram --------------------------------------------------------
 
     if (settings.fileType == 1)

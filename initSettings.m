@@ -25,7 +25,7 @@ function settings = initSettings()
 %% Processing settings ====================================================
 % Number of milliseconds to be processed used 36000 + any transients (see
 % below - in Nav parameters) to ensure nav subframes are provided
-settings.msToProcess        = 36000;        %[ms]
+settings.msToProcess        = 60000;        %[ms]
 
 % Number of channels to be used for signal processing
 settings.numberOfChannels   = 8;
@@ -49,13 +49,11 @@ settings.skipNumberOfBytes     = 0;
 %     %'C:\Users\gps\Desktop\SihaoZ\dynamic\9_13_2010_14h_53min_25s\9_13_2010_14h_53min_25s_SDR.bin';
 %     %'C:\Nordnav-Rx_v3-6-1\h22m49up.sim';
 % settings.fileName           =  'C:\gnss0.bin';
-settings.fileName = 'C:\Users\AltBOC\Documents\MATLAB\sdr\data\201404150757amUTCG\v2\gnsa14.bin';
-settings.fileName = 'C:\Users\AltBOC\Documents\MATLAB\gnsa14.bin';
+settings.fileName = '/home/nirvana/gps-sdr-sim/gpssim.bin';
     
     
 % Data type used to store one sample
-settings.dataType           = 'schar';
-
+settings.dataType = 'int8';
 % File Types
 %1 - 8 bit real samples S0,S1,S2,...
 %2 - 8 bit I/Q samples I0,Q0,I1,Q1,I2,Q2,...
@@ -64,9 +62,9 @@ settings.fileType           = 2;
 % Intermediate, sampling and code frequencies
 
 % settings.IF                 = 0e6;%-1e6;%10;      %[Hz]
-% settings.samplingFreq       = 2.5e6;%5e6;%2.048e6;    %[Hz]
-settings.IF                 = 38400;        %[Hz]
-settings.samplingFreq       = 16.3676e6/2;  %[Hz]
+% settings.samplingFreq       =     %[Hz]
+settings.IF                 = 0;        %[Hz]
+settings.samplingFreq = 2600000; %[Hz]
 settings.codeFreqBasis      = 1.023e6;      %[Hz]
 
 

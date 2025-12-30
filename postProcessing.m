@@ -183,3 +183,14 @@ else
     % Error while opening the data file.
     error('Unable to read file %s: %s.', settings.fileName, message);
 end % if (fid > 0)
+% --- Exportation NMEA pour gpsfake ---
+fid_nmea = fopen('softgnss_output.nmea', 'w');
+for i = 1:length(navSolutions)
+    if ~isnan(navSolutions(i).latitude)
+        % Création d'une phrase GPGGA simplifiée
+        fprintf(fid_nmea, '$GPGGA,1200%02d,%.4f,N,%.4f,E,1,08,0.9,%.1f,M,0,M,,*47\n', ...
+                i, navSolutions(i).latitude, navSolutions(i).longitude, navSolutions(i).height);
+    end
+end
+fclose(fid_nmea);
+disp('Fichier NMEA généré : softgnss_output.nmea');
